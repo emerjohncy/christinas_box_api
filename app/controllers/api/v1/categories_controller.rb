@@ -18,7 +18,7 @@ class Api::V1::CategoriesController < ApplicationController
     @category = Category.new(category_params)
 
     if @category.save
-      render json: { status: "Success", message: "Category created successfully.", data: @category }, status: :created
+      render json: { status: "Success", message: "Category was created successfully.", data: @category }, status: :created
     else
       render json: { status: "Error", message: @category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class Api::V1::CategoriesController < ApplicationController
   # PATCH/PUT /categories/1
   def update
     if @category.update(category_params)
-      render json: { status: "Success", message: "Category updated successfully.", data: @category }, status: :updated
+      render json: { status: "Success", message: "Category was updated successfully.", data: @category }, status: :ok
     else
       render json: { status: "Error", message: @category.errors.full_messages }, status: :unprocessable_entity
     end
