@@ -1,5 +1,5 @@
 class Api::V1::CategoriesController < ApplicationController
-  before_action :get_category, only: [:show, :update]
+  before_action :get_category, only: [ :show, :update ]
 
   # GET /categories
   def index
@@ -18,18 +18,18 @@ class Api::V1::CategoriesController < ApplicationController
     @category = Category.new(category_params)
 
     if @category.save
-      render json: { status: 'Success', message: 'Category created successfully.', data: @category }, status: :created
+      render json: { status: "Success", message: "Category created successfully.", data: @category }, status: :created
     else
-      render json: { status: 'Error', message: @category.errors.full_messages }, status: :unprocessable_entity
+      render json: { status: "Error", message: @category.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /categories/1
   def update
     if @category.update(category_params)
-      render json: { status: 'Success', message: 'Category updated successfully.', data: @category }, status: :updated
+      render json: { status: "Success", message: "Category updated successfully.", data: @category }, status: :updated
     else
-      render json: { status: 'Error', message: @category.errors.full_messages }, status: :unprocessable_entity
+      render json: { status: "Error", message: @category.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
