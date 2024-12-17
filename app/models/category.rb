@@ -7,10 +7,6 @@ class Category < ApplicationRecord
     # scope :active, -> { where(status: 'Active') }
     # scope :inactive, -> { where(status: 'Inactive') }
 
-    def deactivate
-        update(status: "Inactive")
-    end
-
     private
 
     def set_default_status
