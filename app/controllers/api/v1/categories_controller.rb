@@ -1,9 +1,9 @@
 class Api::V1::CategoriesController < ApplicationController
-  before_action :get_category, only: [ :show, :update ]
+  before_action :get_category, only: [ :show, :update, :destroy ]
 
   # GET /categories
   def index
-    @categories = Category.all
+    @categories = Category.order(:id)
 
     render json: @categories
   end
@@ -33,6 +33,15 @@ class Api::V1::CategoriesController < ApplicationController
     end
   end
 
+  # DELETE /categories/1
+  def destroy
+    if @category.deactivate
+      render json: { status: "Success", message: "Category was successfully deactivated." }, status: :ok
+    else
+      render json: { error: @category.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def get_category
@@ -40,6 +49,6 @@ class Api::V1::CategoriesController < ApplicationController
   end
 
   def category_params
-    params.require(:category).permit(:name)
+    params.require(:category).permit(:name, :status)
   end
 end
