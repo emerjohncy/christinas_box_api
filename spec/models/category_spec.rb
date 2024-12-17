@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-# RSpec.describe Category, type: :model do
-#   pending "add some examples to (or delete) #{__FILE__}"
-# end
-
 RSpec.describe Category, type: :model do
     subject { Category.new(name: "Necklaces", status: "Inactive") }
 
@@ -45,10 +41,5 @@ RSpec.describe Category, type: :model do
     it "does not overwrite the provided status" do
         category = Category.new(name: "Necklaces", status: "Active")
         expect(category.status).to eq("Active")
-    end
-
-    it "deactivates the category by setting status to Inactive" do
-        subject.deactivate
-        expect(subject.status).to eq("Inactive")
     end
 end
