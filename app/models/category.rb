@@ -1,5 +1,5 @@
 class Category < ApplicationRecord
-    validates :name, presence: true
+    validates :name, presence: true, uniqueness: { case_sensitive: false }
     validates :status, presence: true, inclusion: { in: [ "Active", "Inactive" ] }
 
     after_initialize :set_default_status, if: :new_record?
