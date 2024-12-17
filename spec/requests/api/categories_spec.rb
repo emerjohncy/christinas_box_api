@@ -18,7 +18,7 @@ RSpec.describe "Categories", type: :request do
     describe "GET /categories/:id" do
         it "returns the correct category" do
             get api_v1_category_path(active_category)
-            
+
             expect(response).to have_http_status(:ok)
             expect(response.body).to include("Necklaces")
         end
@@ -90,46 +90,46 @@ RSpec.describe "Categories", type: :request do
                 expect(response).to have_http_status(:ok)
             end
         end
-  
+
         context "with invalid parameters" do
             it "does not update if name is empty" do
                 patch api_v1_category_path(active_category), params: { category: { name: "" } }
-                
+
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
             it "does not update if name already exists" do
                 patch api_v1_category_path(active_category), params: { category: { name: "Earrings" } }
-                
+
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
             it "does not update if name already exists regardless of its case" do
                 patch api_v1_category_path(active_category), params: { category: { name: "earrings" } }
-                
+
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
             it "does not update if status is neither Active nor Inactive" do
                 patch api_v1_category_path(active_category), params: { category: { status: "Invalid Status" } }
-                
+
                 expect(response).to have_http_status(:unprocessable_entity)
             end
 
             it "return not found if category does not exist" do
                 patch api_v1_category_path(999999), params: { category: { Name: "Updated Name" } }
-                
+
                 expect(response).to have_http_status(:not_found)
             end
         end
     end
-  
+
     describe "DELETE /categories/:id" do
         it "deletes the category" do
             expect {
                 delete api_v1_category_path(active_category)
             }.to change(Category, :count).by(-1)
-        
+
             expect(response).to have_http_status(:ok)
         end
 
@@ -140,4 +140,3 @@ RSpec.describe "Categories", type: :request do
         end
     end
 end
-  

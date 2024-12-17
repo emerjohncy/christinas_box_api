@@ -47,7 +47,7 @@ class Api::V1::CategoriesController < ApplicationController
   def get_category
     @category = Category.find_by(id: params[:id])
     unless @category
-      render json: {status: "Error", message: "Category not found"}, status: :not_found
+      render json: { status: "Error", message: "Category not found" }, status: :not_found
     end
   end
 
