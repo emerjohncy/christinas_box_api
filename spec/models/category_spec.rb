@@ -19,7 +19,7 @@ RSpec.describe Category, type: :model do
 
   it "is not valid with a duplicate name (case-insensitive)" do
     subject.save
-    duplicate_category = Category.new(name: "necklaces", status: "Active")  # Same name, different case
+    duplicate_category = Category.new(name: "necklaces", status: "Active")
     expect(duplicate_category).to_not be_valid
   end
 
