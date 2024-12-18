@@ -35,8 +35,8 @@ class Api::V1::CategoriesController < ApplicationController
 
   # DELETE /categories/1
   def destroy
-    if @category.deactivate
-      render json: { status: "Success", message: "Category was successfully deactivated." }, status: :ok
+    if @category.destroy
+      render json: { status: "Success", message: "Category was deleted successfully." }, status: :ok
     else
       render json: { error: @category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -45,7 +45,10 @@ class Api::V1::CategoriesController < ApplicationController
   private
 
   def get_category
-    @category = Category.find(params[:id])
+    @category = Category.find_by(id: params[:id])
+    unless @category
+      render json: { status: "Error", message: "Category not found" }, status: :not_found
+    end
   end
 
   def category_params
