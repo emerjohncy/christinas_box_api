@@ -1,5 +1,4 @@
 class Api::V1::ProductsController < ApplicationController
-  include GetCategory
   before_action :get_category, only: [ :index, :show, :create, :update, :destroy ]
   before_action :get_product, only: [ :show, :update, :destroy ]
 
@@ -48,6 +47,16 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   private
+
+  def get_category
+    if params[:category_id]
+      @category = Category.find_by(id: params[:category_id])
+
+      unless @category
+        render json: { status: "Error", message: "Category not found" }, status: :not_found
+      end
+    end
+  end
 
   def get_product
     if @category
