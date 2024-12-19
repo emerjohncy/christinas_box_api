@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Category, type: :model do
-  subject { Category.new(name: "Necklaces", status: "Inactive") }
+  subject { Category.new(name: "Anklets", status: "Inactive") }
 
   it "is valid with valid attributes" do
     expect(subject).to be_valid
@@ -19,7 +19,7 @@ RSpec.describe Category, type: :model do
 
   it "is not valid with a duplicate name (case-insensitive)" do
     subject.save
-    duplicate_category = Category.new(name: "necklaces", status: "Active")
+    duplicate_category = Category.new(name: "anklets", status: "Active")
     expect(duplicate_category).to_not be_valid
   end
 
@@ -29,17 +29,17 @@ RSpec.describe Category, type: :model do
   end
 
   it "is valid even without status after initialize" do
-    category = Category.new(name: "Necklaces")
+    category = Category.new(name: "Anklets")
     expect(category).to be_valid
   end
 
   it "sets the status to default value Inactive if status is nil after initialize" do
-    category = Category.new(name: "Necklaces")
+    category = Category.new(name: "Anklets")
     expect(category.status).to eq("Inactive")
   end
 
   it "does not overwrite the provided status" do
-    category = Category.new(name: "Necklaces", status: "Active")
+    category = Category.new(name: "Anklets", status: "Active")
     expect(category.status).to eq("Active")
   end
 end

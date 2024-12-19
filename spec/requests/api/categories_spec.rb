@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe "Categories", type: :request do
-  let!(:active_category) { Category.create!(name: "Necklaces", status: "Active") }
-  let!(:inactive_category) { Category.create!(name: "Earrings", status: "Inactive") }
+  let!(:active_category) { Category.create!(name: "Anklets", status: "Active") }
+  let!(:inactive_category) { Category.create!(name: "Pendants", status: "Inactive") }
 
   describe "GET /categories" do
     it "returns a successful response" do
       get api_v1_categories_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Necklaces")
-      expect(response.body).to include("Earrings")
+      expect(response.body).to include("Anklets")
+      expect(response.body).to include("Pendants")
       expect(Category.count).to eq(2)
     end
   end
@@ -20,7 +20,7 @@ RSpec.describe "Categories", type: :request do
       get api_v1_category_path(active_category)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Necklaces")
+      expect(response.body).to include("Anklets")
     end
 
     it "returns not found if category does not exist" do
@@ -36,10 +36,10 @@ RSpec.describe "Categories", type: :request do
     context "with valid parameters" do
       it "creates a new category" do
       expect {
-        post api_v1_categories_path, params: { category: { name: "Bracelets", status: "Active" } }
+        post api_v1_categories_path, params: { category: { name: "Watches", status: "Active" } }
       }.to change(Category, :count).by(1)
       expect(response).to have_http_status(:created)
-      expect(response.body).to include("Bracelets")
+      expect(response.body).to include("Watches")
       expect(response.body).to include("Success")
       expect(response.body).to include("Category was created successfully.")
       end
@@ -57,7 +57,7 @@ RSpec.describe "Categories", type: :request do
 
       it "does not create a new category if name already exists" do
         expect {
-          post api_v1_categories_path, params: { category: { name: "Necklaces", status: "Active" } }
+          post api_v1_categories_path, params: { category: { name: "Anklets", status: "Active" } }
         }.to_not change(Category, :count)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("Error")
@@ -66,7 +66,7 @@ RSpec.describe "Categories", type: :request do
 
       it "does not create a new category if name already exists and ignores case sensitivity" do
         expect {
-          post api_v1_categories_path, params: { category: { name: "necklaces", status: "Active" } }
+          post api_v1_categories_path, params: { category: { name: "anklets", status: "Active" } }
         }.to_not change(Category, :count)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("Error")
@@ -75,7 +75,7 @@ RSpec.describe "Categories", type: :request do
 
       it "does not create a new category if status is neither Active nor Inactive" do
         expect {
-          post api_v1_categories_path, params: { category: { name: "Rings", status: "Invalid Status" } }
+          post api_v1_categories_path, params: { category: { name: "Brooches", status: "Invalid Status" } }
         }.to_not change(Category, :count)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("Error")
@@ -87,10 +87,10 @@ RSpec.describe "Categories", type: :request do
   describe "PATCH /categories/:id" do
     context "with valid parameters" do
       it "updates the name of category" do
-        patch api_v1_category_path(active_category), params: { category: { name: "Updated Necklaces" } }
+        patch api_v1_category_path(active_category), params: { category: { name: "Updated Anklets" } }
         active_category.reload
 
-        expect(active_category.name).to eq("Updated Necklaces")
+        expect(active_category.name).to eq("Updated Anklets")
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Success")
         expect(response.body).to include("Category was updated successfully.")
@@ -117,7 +117,7 @@ RSpec.describe "Categories", type: :request do
       end
 
       it "does not update if name already exists" do
-        patch api_v1_category_path(active_category), params: { category: { name: "Earrings" } }
+        patch api_v1_category_path(active_category), params: { category: { name: "Pendants" } }
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("Error")
@@ -125,7 +125,7 @@ RSpec.describe "Categories", type: :request do
       end
 
       it "does not update if name already exists regardless of its case" do
-        patch api_v1_category_path(active_category), params: { category: { name: "earrings" } }
+        patch api_v1_category_path(active_category), params: { category: { name: "pendants" } }
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("Error")
