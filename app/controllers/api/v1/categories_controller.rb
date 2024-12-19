@@ -1,5 +1,4 @@
 class Api::V1::CategoriesController < ApplicationController
-  include GetCategory
   before_action :get_category, only: [ :show, :update, :destroy ]
 
   # GET /categories
@@ -44,6 +43,13 @@ class Api::V1::CategoriesController < ApplicationController
   end
 
   private
+
+  def get_category
+    @category = Category.find_by(id: params[:id])
+    unless @category
+      render json: { status: "Error", message: "Category not found" }, status: :not_found
+    end
+  end
 
   def category_params
     params.require(:category).permit(:name, :status)
