@@ -347,7 +347,7 @@ RSpec.describe "Products", type: :request do
           allow_any_instance_of(Product).to receive(:destroy).and_return(false)
           delete api_v1_category_product_path(product1.category_id.to_s, product1.id.to_s)
         end
-  
+
         it "returns an error response" do
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.body).to include("Error")
