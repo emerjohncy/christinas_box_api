@@ -38,7 +38,7 @@ class Api::V1::CategoriesController < ApplicationController
     if @category.destroy
       render json: { status: "Success", message: "Category was deleted successfully." }, status: :ok
     else
-      render json: { error: @category.errors.full_messages }, status: :unprocessable_entity
+      render json: { status: "Error",  messages: "Failed to delete category" }, status: :unprocessable_entity
     end
   end
 
