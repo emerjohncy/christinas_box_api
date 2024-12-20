@@ -176,6 +176,19 @@ RSpec.describe "Categories", type: :request do
       expect(response.body).to include("Category not found")
     end
 
+    context "when deletion fails" do
+      before do
+        allow_any_instance_of(Category).to receive(:destroy).and_return(false)
+        delete api_v1_category_path(active_category.id.to_s)
+      end
+
+      it "returns an error response" do
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Failed to delete category")
+      end
+    end
+
     context "associations" do
       let!(:product1) { Product.create!(name: "Gold Necklace", description: "A beautiful gold necklace", price: 12000.00, category: active_category) }
 
