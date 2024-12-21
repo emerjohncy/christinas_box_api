@@ -6,15 +6,16 @@ class Api::V1::ProductsController < ApplicationController
   def index
     if @category
       @products = @category.products
+      render json: { status: "Success", category: SimplifiedCategorySerializer.new(@category), data: ActiveModelSerializers::SerializableResource.new(@products, each_serializer: ProductSerializer) }
     else
       @products = Product.all
+      render json: { status: "Success", data: ActiveModelSerializers::SerializableResource.new(@products, each_serializer: ProductSerializer) }
     end
-    render json: @products
   end
 
   # GET /categories/:category_id/products/:id || GET /products/:id
   def show
-    render json: @product
+    render json: { status: "Success", data: ProductSerializer.new(@product) }
   end
 
   # POST /categories/:category_id/products/
@@ -22,7 +23,7 @@ class Api::V1::ProductsController < ApplicationController
     @product = @category.products.new(product_params)
 
     if @product.save
-      render json: { status: "Success", message: "Product was created successfully.", data: @product }, status: :created
+      render json: { status: "Success", message: "Product was created successfully.", data: ProductSerializer.new(@product) }, status: :created
     else
       render json: { status: "Error", message: @product.errors.full_messages }, status: :unprocessable_entity
     end
