@@ -173,148 +173,117 @@ RSpec.describe "Products", type: :request do
         expect(category1.products.count).to eq(2)
       end
     end
+  end
 
-    describe "PATCH /categories/:category_id/products/:id" do
-      context "with valid parameters" do
-        it "updates the name of the product" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { name: "Updated Name" } }
-          product1.reload
+  describe "PATCH /categories/:category_id/products/:id" do
+    context "with valid parameters" do
+      it "updates the name of the product" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { name: "Updated Name" } }
+        product1.reload
 
-          expect(product1.name).to eq("Updated Name")
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("Success")
-          expect(response.body).to include("Product was updated successfully.")
-        end
-
-        it "updates the description of the product" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { description: "Updated Description" } }
-          product1.reload
-
-          expect(product1.description).to eq("Updated Description")
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("Success")
-          expect(response.body).to include("Product was updated successfully.")
-        end
-
-        it "updates the price of the product" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { price: 10000 } }
-          product1.reload
-
-          expect(product1.price).to eq(10000)
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("Success")
-          expect(response.body).to include("Product was updated successfully.")
-        end
-
-        it "updates the category of the product" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { category_id: category2.id } }
-          product1.reload
-
-          expect(product1.category).to eq(category2)
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include("Success")
-          expect(response.body).to include("Product was updated successfully.")
-        end
+        expect(product1.name).to eq("Updated Name")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Success")
+        expect(response.body).to include("Product was updated successfully.")
       end
 
-      context "with invalid parameters" do
-        it "does not update if name is empty" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { name: "" } }
+      it "updates the description of the product" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { description: "Updated Description" } }
+        product1.reload
 
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Name can't be blank")
-          expect(product1.name).to eq("Gold Pendant")
-        end
+        expect(product1.description).to eq("Updated Description")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Success")
+        expect(response.body).to include("Product was updated successfully.")
+      end
 
-        it "does not update if description is empty" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { description: "" } }
+      it "updates the price of the product" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { price: 10000 } }
+        product1.reload
 
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Description can't be blank")
-          expect(product1.description).to eq("A beautiful gold pendant")
-        end
+        expect(product1.price).to eq(10000)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Success")
+        expect(response.body).to include("Product was updated successfully.")
+      end
 
-        it "does not update if price is empty" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { price: nil } }
+      it "updates the category of the product" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { category_id: category2.id } }
+        product1.reload
 
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Price can't be blank")
-          expect(product1.price).to eq(5000.00)
-        end
-
-        it "does not update if price is zero" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { price: 0 } }
-
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Price must be greater than 0")
-          expect(product1.price).to eq(5000.00)
-        end
-
-        it "does not update if price is less than zero" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { price: -10000 } }
-
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Price must be greater than 0")
-          expect(product1.price).to eq(5000.00)
-        end
-
-        it "does not update if price is not a number" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { price: "ten thousand" } }
-
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Price is not a number")
-          expect(product1.price).to eq(5000.00)
-        end
-
-        it "does not update if category_id does not exist" do
-          patch api_v1_category_product_path(category1, product1), params: { product: { category_id: 999 } }
-
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Category must exist")
-          expect(product1.category).to eq(category1)
-        end
-
-        it "returns not found if params[:category_id] does not exist" do
-          patch api_v1_category_product_path(999, product1), params: { product: { name: "Updated Name" } }
-
-          expect(response).to have_http_status(:not_found)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Category not found")
-        end
-
-        it "returns not found if params[:id] does not exist" do
-          patch api_v1_category_product_path(category1, 999), params: { product: { name: "Updated Name" } }
-
-          expect(response).to have_http_status(:not_found)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Product not found")
-        end
+        expect(product1.category).to eq(category2)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Success")
+        expect(response.body).to include("Product was updated successfully.")
       end
     end
 
-    describe "DELETE /categories/:category_id/products/:id" do
-      it "deletes the product" do
-        expect {
-          delete api_v1_category_product_path(category1, product1)
-        }.to change(Product, :count).by(-1)
+    context "with invalid parameters" do
+      it "does not update if name is empty" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { name: "" } }
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Success")
-        expect(response.body).to include("Product was deleted successfully.")
-        expect(Product.exists?(product1.id)).to be false
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Name can't be blank")
+        expect(product1.name).to eq("Gold Pendant")
+      end
+
+      it "does not update if description is empty" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { description: "" } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Description can't be blank")
+        expect(product1.description).to eq("A beautiful gold pendant")
+      end
+
+      it "does not update if price is empty" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { price: nil } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Price can't be blank")
+        expect(product1.price).to eq(5000.00)
+      end
+
+      it "does not update if price is zero" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { price: 0 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Price must be greater than 0")
+        expect(product1.price).to eq(5000.00)
+      end
+
+      it "does not update if price is less than zero" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { price: -10000 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Price must be greater than 0")
+        expect(product1.price).to eq(5000.00)
+      end
+
+      it "does not update if price is not a number" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { price: "ten thousand" } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Price is not a number")
+        expect(product1.price).to eq(5000.00)
+      end
+
+      it "does not update if category_id does not exist" do
+        patch api_v1_category_product_path(category1, product1), params: { product: { category_id: 999 } }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Category must exist")
+        expect(product1.category).to eq(category1)
       end
 
       it "returns not found if params[:category_id] does not exist" do
-        expect {
-          delete api_v1_category_product_path(999, product1)
-        }.to_not change(Product, :count)
+        patch api_v1_category_product_path(999, product1), params: { product: { name: "Updated Name" } }
 
         expect(response).to have_http_status(:not_found)
         expect(response.body).to include("Error")
@@ -322,37 +291,68 @@ RSpec.describe "Products", type: :request do
       end
 
       it "returns not found if params[:id] does not exist" do
-        expect {
-          delete api_v1_category_product_path(category1, 999)
-        }.to_not change(Product, :count)
+        patch api_v1_category_product_path(category1, 999), params: { product: { name: "Updated Name" } }
 
         expect(response).to have_http_status(:not_found)
         expect(response.body).to include("Error")
         expect(response.body).to include("Product not found")
       end
+    end
+  end
 
-      it "does not delete its associated category if a product is destroyed" do
-        expect {
-          delete api_v1_category_product_path(category1, product1)
-        }.to_not change(Category, :count)
+  describe "DELETE /categories/:category_id/products/:id" do
+    it "deletes the product" do
+      expect {
+        delete api_v1_category_product_path(category1, product1)
+      }.to change(Product, :count).by(-1)
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Success")
-        expect(response.body).to include("Product was deleted successfully.")
-        expect(Category.exists?(category1.id)).to be true
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Success")
+      expect(response.body).to include("Product was deleted successfully.")
+      expect(Product.exists?(product1.id)).to be false
+    end
+
+    it "returns not found if params[:category_id] does not exist" do
+      expect {
+        delete api_v1_category_product_path(999, product1)
+      }.to_not change(Product, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to include("Error")
+      expect(response.body).to include("Category not found")
+    end
+
+    it "returns not found if params[:id] does not exist" do
+      expect {
+        delete api_v1_category_product_path(category1, 999)
+      }.to_not change(Product, :count)
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).to include("Error")
+      expect(response.body).to include("Product not found")
+    end
+
+    it "does not delete its associated category if a product is destroyed" do
+      expect {
+        delete api_v1_category_product_path(category1, product1)
+      }.to_not change(Category, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Success")
+      expect(response.body).to include("Product was deleted successfully.")
+      expect(Category.exists?(category1.id)).to be true
+    end
+
+    context "when deletion fails" do
+      before do
+        allow_any_instance_of(Product).to receive(:destroy).and_return(false)
+        delete api_v1_category_product_path(product1.category_id.to_s, product1.id.to_s)
       end
 
-      context "when deletion fails" do
-        before do
-          allow_any_instance_of(Product).to receive(:destroy).and_return(false)
-          delete api_v1_category_product_path(product1.category_id.to_s, product1.id.to_s)
-        end
-
-        it "returns an error response" do
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(response.body).to include("Error")
-          expect(response.body).to include("Failed to delete product")
-        end
+      it "returns an error response" do
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Error")
+        expect(response.body).to include("Failed to delete product")
       end
     end
   end

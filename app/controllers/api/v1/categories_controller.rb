@@ -5,12 +5,12 @@ class Api::V1::CategoriesController < ApplicationController
   def index
     @categories = Category.order(:id)
 
-    render json: @categories
+    render json: { status: "Success", data: ActiveModelSerializers::SerializableResource.new(@categories, each_serializer: CategorySerializer) }
   end
 
   # GET /categories/1
   def show
-    render json: @category
+    render json: { status: "Success", data: CategorySerializer.new(@category) }
   end
 
   # POST /categories
@@ -18,7 +18,7 @@ class Api::V1::CategoriesController < ApplicationController
     @category = Category.new(category_params)
 
     if @category.save
-      render json: { status: "Success", message: "Category was created successfully.", data: @category }, status: :created
+      render json: { status: "Success", message: "Category was created successfully.", data: CategorySerializer.new(@category) }, status: :created
     else
       render json: { status: "Error", message: @category.errors.full_messages }, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class Api::V1::CategoriesController < ApplicationController
   # PATCH/PUT /categories/1
   def update
     if @category.update(category_params)
-      render json: { status: "Success", message: "Category was updated successfully.", data: @category }, status: :ok
+      render json: { status: "Success", message: "Category was updated successfully." }, status: :ok
     else
       render json: { status: "Error", message: @category.errors.full_messages }, status: :unprocessable_entity
     end
